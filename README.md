@@ -204,12 +204,36 @@ result count. All muted text clears WCAG AA (4.5:1) on every surface it appears 
 
 ## Deploying
 
-The build is fully static — `dist/` can be served by anything.
+Live at **https://sumit-badgujar.netlify.app** · repo **https://github.com/Sumit4545270/portfolio**
+
+Netlify builds from `main` on every push. `netlify.toml` holds the whole configuration —
+build command, publish directory, Node version, cache headers and a Content-Security-Policy
+scoped to exactly what the page uses (Google Fonts and the GitHub API).
 
 ```bash
-npm run build
+git add -A
+git commit -m "..."
+git push          # Netlify redeploys automatically
 ```
 
-Vercel / Netlify / Cloudflare Pages: build command `npm run build`, output directory
-`dist`. GitHub Pages: publish `dist`, and set `base` in `vite.config.ts` if the site is
-served from a subpath.
+### If the site URL ever changes
+
+The canonical URL is written into four places. Update all of them together:
+
+- `index.html` — `<link rel="canonical">`, `og:url`, `og:image`, `twitter:image`, and
+  `url` in the JSON-LD block
+- `public/sitemap.xml`
+- `public/robots.txt`
+- `homepage` on the GitHub repo
+
+### Building elsewhere
+
+The output is plain static files, so any host works:
+
+```bash
+npm ci && npm run build   # -> dist/
+```
+
+Verified in a clean clone: `npm ci` then `npm run build` produces a 771 kB `dist/` with no
+build-time network dependency (the profile photo source is committed at
+`assets/profile-source.jpg`).
