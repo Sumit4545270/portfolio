@@ -21,7 +21,7 @@ export const profile = {
   links: {
     linkedin: 'https://www.linkedin.com/in/sumit-badgujar-9703091b5/', // [resume]
     github: 'https://github.com/Sumit4545270', // [resume]
-    resume: '/resume/Sumit_Badgujar_Resume.pdf',
+    resume: `${import.meta.env.BASE_URL}resume/Sumit_Badgujar_Resume.pdf`,
   },
   resumeFileName: 'Sumit_Badgujar_Resume.pdf',
   githubUser: 'Sumit4545270',

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sumit-badgujar.netlify.app/sitemap.xml
+Sitemap: https://sumit4545270.github.io/portfolio/sitemap.xml
