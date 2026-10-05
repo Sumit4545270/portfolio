@@ -1,0 +1,35 @@
+{
+  "name": "sumit-badgujar-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "icons": "node scripts/gen-icons.mjs",
+    "check:icons": "node scripts/check-icons.mjs",
+    "audit": "node scripts/audit.mjs",
+    "test:ui": "node scripts/interactions.mjs",
+    "shot": "node scripts/shot.mjs",
+    "image": "node scripts/gen-profile-image.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^1.52.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "playwright": "^1.63.0",
+    "sharp": "^0.35.5",
+    "simple-icons": "^16.34.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
+  },
+  "description": "Personal portfolio for Sumit Sanjay Badgujar — Full Stack & DevSecOps Engineer"
+}

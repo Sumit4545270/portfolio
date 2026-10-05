@@ -1,0 +1,435 @@
+@import 'tailwindcss';
+
+/* Class-based theme switching so the choice can be persisted. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Light and dark are designed separately — dark is not an
+   inversion. Light leans paper-white with deep navy text; dark leans a cool
+   near-black with a slight blue cast and lower-contrast borders.
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #fbfbfd;
+  --bg-sub: #f3f4f8;
+  --surface: #ffffff;
+  --surface-2: #f7f8fb;
+  --border: #e3e6ee;
+  --border-strong: #cfd4e2;
+  --text: #0d1220;
+  --text-muted: #5a6276;
+  --text-faint: #636b7d; /* 4.86:1 on the lightest surface — WCAG AA */
+
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #e8eeff;
+  --accent-on-soft: #1d4ed8; /* 5.78:1 on --accent-soft; plain accent is only 4.46:1 */
+  --accent-contrast: #ffffff;
+
+  --secure: #047857;
+  --secure-soft: #e4f6ef;
+  --gate: #be123c;
+  --gate-soft: #fdeaef;
+  --warn: #b45309;
+
+  --shadow-sm: 0 1px 2px rgb(13 18 32 / 0.06), 0 1px 3px rgb(13 18 32 / 0.04);
+  --shadow-md: 0 4px 14px rgb(13 18 32 / 0.07), 0 2px 6px rgb(13 18 32 / 0.04);
+  --shadow-lg: 0 18px 50px rgb(13 18 32 / 0.1), 0 6px 16px rgb(13 18 32 / 0.06);
+  --glass: rgb(255 255 255 / 0.78);
+  --grid-line: rgb(13 18 32 / 0.045);
+
+  --border-hover: #b9c0d2;
+  --radius-card: 0.875rem;
+}
+
+.dark {
+  --bg: #07090e;
+  --bg-sub: #0a0d14;
+  --surface: #0e121b;
+  --surface-2: #141926;
+  --border: #1e2534;
+  --border-strong: #2c3547;
+  --text: #e8ebf2;
+  --text-muted: #949db2;
+  --text-faint: #7d8698; /* 4.79:1 on the lightest dark surface — WCAG AA */
+
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --accent-soft: #11203a;
+  --accent-on-soft: #60a5fa; /* 6.40:1 on --accent-soft — the accent already clears AA */
+  --accent-contrast: #06111f;
+
+  --secure: #34d399;
+  --secure-soft: #0d241d;
+  --gate: #fb7185;
+  --gate-soft: #2a1119;
+  --warn: #fbbf24;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 6px 20px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.55);
+  --glass: rgb(10 13 20 / 0.78);
+  --grid-line: rgb(255 255 255 / 0.04);
+
+  --border-hover: #3a4559;
+  --radius-card: 0.875rem;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-sub: var(--bg-sub);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border-base: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-hover: var(--border-hover);
+  --color-text-base: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-on-soft: var(--accent-on-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-secure: var(--secure);
+  --color-secure-soft: var(--secure-soft);
+  --color-gate: var(--gate);
+  --color-gate-soft: var(--gate-soft);
+  --color-warn: var(--warn);
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-xl2: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------- */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border);
+    min-width: 0; /* stops flex/grid children forcing horizontal overflow */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor targets so the sticky header never covers a heading. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip; /* hard guarantee against horizontal scroll */
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, high-contrast keyboard focus everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-track { background: var(--bg-sub); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 99px;
+    border: 3px solid var(--bg-sub);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+  /* Prevent iOS zoom-on-focus by keeping inputs at >=16px. */
+  input, textarea, select, button { font: inherit; }
+  input, textarea { font-size: max(16px, 1rem); }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+    max-width: 78rem;
+  }
+  @media (min-width: 640px) { .container-page { padding-inline: 1.75rem; } }
+  @media (min-width: 1024px) { .container-page { padding-inline: 2.5rem; } }
+  @media (min-width: 1536px) { .container-page { max-width: 84rem; } }
+  @media (min-width: 1920px) { .container-page { max-width: 90rem; } }
+
+  /* ---------------------------------------------------------------- cards
+     One card definition for the whole site. Every panel uses .surface-card;
+     anything that lifts on hover adds .surface-card-hover. Radius, border,
+     shadow and hover live only here, so no two cards can drift apart.
+  ------------------------------------------------------------------------ */
+  .surface-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+    transition:
+      border-color 0.24s ease,
+      box-shadow 0.24s ease,
+      transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.24s ease;
+  }
+  .surface-card-hover:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+  .surface-card-hover:focus-within {
+    border-color: var(--accent);
+  }
+
+  /* Consistent icon container. One size per context, never ad-hoc. */
+  .icon-tile {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 0.7rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: background-color 0.24s ease, border-color 0.24s ease;
+  }
+  .icon-tile-lg { width: 2.75rem; height: 2.75rem; border-radius: 0.8rem; }
+  .icon-tile-sm { width: 2rem; height: 2rem; border-radius: 0.55rem; }
+  .icon-tile-accent {
+    background: var(--accent-soft);
+    border-color: color-mix(in oklab, var(--accent) 22%, transparent);
+    color: var(--accent-on-soft);
+  }
+  .group:hover .icon-tile-hover {
+    background: var(--accent-soft);
+    border-color: color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+
+  .glass-bar {
+    background: var(--glass);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+  }
+
+  /* Faint engineering grid used behind the hero. Purely decorative. */
+  .grid-backdrop {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 78%);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    padding: 0.3rem 0.7rem;
+    font-size: 0.75rem;
+    line-height: 1.1rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* ----------------------------------------------------------- typography
+     One fluid scale for the whole page. Sizes interpolate with the viewport
+     instead of jumping at breakpoints, and the hero name is deliberately
+     restrained so the role and value proposition stay above the fold.
+  ------------------------------------------------------------------------ */
+  .display-name {
+    font-size: clamp(1.875rem, 1.25rem + 2.3vw, 3rem);
+    line-height: 1.04;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .display-role {
+    font-size: clamp(1.0625rem, 0.9rem + 0.72vw, 1.5rem);
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .heading-section {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    line-height: 1.12;
+    font-weight: 700;
+    letter-spacing: -0.028em;
+  }
+
+  .heading-card {
+    font-size: 1.0625rem;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+  }
+
+  .lead {
+    font-size: clamp(0.9375rem, 0.88rem + 0.28vw, 1.0625rem);
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .body-sm {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .eyebrow-muted {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  /* ------------------------------------------------------- section rhythm */
+  .section-pad {
+    padding-block: 4rem;
+  }
+  @media (min-width: 640px) { .section-pad { padding-block: 5rem; } }
+  @media (min-width: 1024px) { .section-pad { padding-block: 6.5rem; } }
+  @media (min-width: 1536px) { .section-pad { padding-block: 7.5rem; } }
+
+  /*
+    Section seam: a hairline that fades out at both ends. Keeps neighbouring
+    sections visually connected without a hard full-width rule across the page.
+  */
+  .section-seam::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--border) 18%,
+      var(--border-strong) 50%,
+      var(--border) 82%,
+      transparent
+    );
+  }
+
+  /* A soft wash at the top of a tinted band so the edge is not a hard cut. */
+  .section-wash::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 10rem;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--accent) 4%, transparent),
+      transparent
+    );
+  }
+
+  /* Minimum 44px touch targets on coarse pointers. */
+  @media (pointer: coarse) {
+    .tap-target { min-height: 44px; min-width: 44px; }
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(100deg, var(--text) 25%, var(--accent) 115%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Scroll reveal. Elements start hidden only when JS will reveal them; the
+     no-js / reduced-motion paths below keep content visible regardless. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+/* Respect the user's motion preference across the whole site. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero pipeline cascade. Each stage lights briefly in sequence, suggesting a
+   build moving through the pipeline. Purely decorative and disabled entirely
+   by the reduced-motion block above.
+--------------------------------------------------------------------------- */
+@keyframes hero-stage-sweep {
+  0%, 68%, 100% { background-color: transparent; }
+  8%, 24% { background-color: var(--surface-2); }
+}
+
+@keyframes hero-dot-pulse {
+  0%, 68%, 100% { transform: scale(1); opacity: 0.65; }
+  10%, 22% { transform: scale(1.9); opacity: 1; }
+}
+
+.hero-stage {
+  animation: hero-stage-sweep 3.4s ease-in-out infinite;
+}
+.hero-stage .hero-stage-dot {
+  animation: hero-dot-pulse 3.4s ease-in-out infinite;
+  animation-delay: inherit;
+}
+
+/* Extra-small breakpoint used for the hero contact strip. */
+@media (min-width: 420px) {
+  .xs\:inline { display: inline; }
+  .xs\:hidden { display: none; }
+}

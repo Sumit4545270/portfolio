@@ -1,0 +1,49 @@
+# Netlify build + serve configuration.
+# The site is a static Vite build; nothing runs server-side.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 requires Node 20.19+ / 22.12+.
+  NODE_VERSION = "22"
+  # Playwright is a devDependency used only by the local test scripts. Without
+  # this it would download browser binaries on every deploy for no reason.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
+
+# Single HTML entry point: serve it for any unmatched path rather than a 404.
+# Status 200 (not 301) so the URL the visitor typed is preserved.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Vite fingerprints asset filenames, so they can be cached indefinitely.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/profile/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# The resume is replaced from time to time, so keep it revalidating.
+[[headers]]
+  for = "/resume/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    # The page loads fonts from Google and calls the GitHub API; everything
+    # else is same-origin. Kept as report-only would hide real breakage, so
+    # this is enforced and scoped to exactly what the site uses.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"

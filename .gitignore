@@ -1,0 +1,8 @@
+node_modules
+dist
+audit-shots
+*.local
+.DS_Store
+*.tsbuildinfo
+.vscode/*
+!.vscode/extensions.json
