@@ -204,36 +204,40 @@ result count. All muted text clears WCAG AA (4.5:1) on every surface it appears 
 
 ## Deploying
 
-Live at **https://sumit-badgujar.netlify.app** · repo **https://github.com/Sumit4545270/portfolio**
+**Live: https://sumit4545270.github.io/portfolio/**
 
-Netlify builds from `main` on every push. `netlify.toml` holds the whole configuration —
-build command, publish directory, Node version, cache headers and a Content-Security-Policy
-scoped to exactly what the page uses (Google Fonts and the GitHub API).
+GitHub Pages, built and published by `.github/workflows/deploy.yml` on every push to
+`main`. Nothing to run by hand:
 
 ```bash
 git add -A
 git commit -m "..."
-git push          # Netlify redeploys automatically
+git push          # the workflow rebuilds and redeploys
 ```
 
-### If the site URL ever changes
+### The base path
 
-The canonical URL is written into four places. Update all of them together:
+Pages serves this repo from `/portfolio/`, not the domain root, so asset URLs have to
+account for it:
 
-- `index.html` — `<link rel="canonical">`, `og:url`, `og:image`, `twitter:image`, and
-  `url` in the JSON-LD block
-- `public/sitemap.xml`
-- `public/robots.txt`
-- `homepage` on the GitHub repo
+- `vite.config.ts` reads `VITE_BASE`, defaulting to `/`. The workflow sets
+  `VITE_BASE=/portfolio/`.
+- `Avatar.tsx` and the resume link in `profile.ts` build their URLs from
+  `import.meta.env.BASE_URL` rather than a leading slash.
+- The `noscript` resume link is **relative**, because Vite rewrites `<link href>` and
+  `<script src>` in `index.html` but not `<a href>`.
 
-### Building elsewhere
+Anything new that points at `/public` must follow the same rule, or it will 404 in
+production while working fine in dev.
 
-The output is plain static files, so any host works:
+### Moving to another host
+
+`netlify.toml` is kept for a root-served host (Netlify, or a custom domain). Such a host
+builds with the default base of `/`, so no code change is needed — but update the absolute
+URLs in `index.html`, `public/sitemap.xml` and `public/robots.txt` to the new domain.
+
+### Building anywhere
 
 ```bash
-npm ci && npm run build   # -> dist/
+npm ci && npm run build   # -> dist/, plain static files
 ```
-
-Verified in a clean clone: `npm ci` then `npm run build` produces a 771 kB `dist/` with no
-build-time network dependency (the profile photo source is committed at
-`assets/profile-source.jpg`).
