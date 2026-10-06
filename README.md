@@ -30,22 +30,38 @@ npm run test:ui      # behavioural tests: theme, filters, dialog, downloads, a11
 
 ## Verified on this build
 
-| | Perf | A11y | Best practices | SEO |
-| --- | --- | --- | --- | --- |
-| Lighthouse desktop | **99** | **100** | 96 | **100** |
-| Lighthouse mobile | **95** | **100** | 96 | **100** |
-
-Desktop LCP 0.9s · CLS 0. Mobile LCP 2.7s · CLS 0.009. Accessibility audits clean on both.
-
-The 96 on best-practices is GitHub's public API rate-limiting the test machine after
-repeated automated runs — the section handles it with a visible error state. A real
-visitor spends one request.
+Correctness is verified and reproducible:
 
 - `npm run audit` — 320 / 375 / 430 / 768 / 1024 / 1280 / 1440 / 1920 / 2560 / 3840 px
   × light and dark: **no horizontal scroll, no overflow, no clipped text, no undersized
   touch targets, no runtime errors.**
 - `npm run test:ui` — **24/24** behavioural checks pass.
+- `npm run test:bg` — **16/16** background checks pass, counting real animation frames.
 - `npm run check:icons` — all 53 icon slugs resolve to a real glyph.
+- Lighthouse **accessibility, best-practices and SEO: 100 / 100 / 100** on production,
+  consistently across every run.
+
+### Performance: measure it properly, not on a loaded laptop
+
+Lighthouse performance scores taken during development ranged from **52 to 99 for the
+same code**, tracking the host machine's memory pressure rather than anything in the
+build. The clearest illustration: a production run *before* the background system scored
+**52 (TBT 3,740 ms)** on a loaded machine, and a run *after* adding it scored **83
+(TBT 150 ms)** once the machine was idle.
+
+Treat any single local run as noise. For an authoritative number use
+[PageSpeed Insights](https://pagespeed.web.dev/), which executes on Google's
+infrastructure:
+
+```
+https://pagespeed.web.dev/analysis?url=https://sumit4545270.github.io/portfolio/
+```
+
+The best-conditions measurements observed were **99 desktop / 95 mobile** before the
+background layer and **TBT 150 ms** on production after it. If a clean PSI run shows
+mobile performance below ~90, the first things to try are raising the canvas tier
+threshold in `NetworkCanvas.tsx` or dropping `.fx-layer-section` at a wider breakpoint
+in `index.css`.
 
 ---
 
