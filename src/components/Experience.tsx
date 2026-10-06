@@ -4,7 +4,7 @@ import { Section, SectionHeading } from './ui'
 
 export function Experience() {
   return (
-    <Section id="experience" tinted>
+    <Section id="experience" tinted backdrop="timeline">
       <SectionHeading
         id="experience"
         eyebrow="Career journey"

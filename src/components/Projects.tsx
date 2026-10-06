@@ -12,7 +12,7 @@ export function Projects() {
   const [open, setOpen] = useState<CaseStudy | null>(null)
 
   return (
-    <Section id="projects">
+    <Section id="projects" backdrop="pipeline">
       <SectionHeading
         id="projects"
         eyebrow="Featured work"

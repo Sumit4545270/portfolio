@@ -13,7 +13,7 @@ const icons: Record<string, LucideIcon> = {
 
 export function WhyMe() {
   return (
-    <Section id="why">
+    <Section id="why" backdrop="nodes">
       <SectionHeading
         id="why"
         eyebrow="Why consider me"

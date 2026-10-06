@@ -29,7 +29,7 @@ export function Skills() {
   )
 
   return (
-    <Section id="skills">
+    <Section id="skills" backdrop="nodes">
       <SectionHeading
         id="skills"
         eyebrow="Technical skills"

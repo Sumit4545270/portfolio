@@ -433,3 +433,232 @@
   .xs\:inline { display: inline; }
   .xs\:hidden { display: none; }
 }
+
+/* ===========================================================================
+   BACKGROUND SYSTEM
+   ---------------------------------------------------------------------------
+   A supporting layer, never the subject. Every variant below is pure CSS: no
+   JavaScript, no frame loop. Only the hero carries an animated canvas.
+
+   Motion is applied with `transform` on an oversized sheet rather than by
+   animating `background-position`, so each layer stays a single composited
+   layer instead of repainting the viewport every frame. Tile sizes and travel
+   distances match exactly, so every loop is seamless.
+
+   Everything here is masked to fade out before it reaches the content, and all
+   of it is switched off by the global prefers-reduced-motion block.
+=========================================================================== */
+
+:root {
+  /* Pattern ink. Light mode needs noticeably less to read as "subtle". */
+  --fx-ink: rgb(13 18 32 / 0.055);
+  --fx-ink-strong: rgb(13 18 32 / 0.09);
+  --fx-accent: rgb(37 99 235 / 0.07);
+  --fx-violet: rgb(109 90 224 / 0.06);
+  --fx-secure: rgb(4 120 87 / 0.06);
+}
+
+.dark {
+  --fx-ink: rgb(255 255 255 / 0.045);
+  --fx-ink-strong: rgb(255 255 255 / 0.08);
+  --fx-accent: rgb(96 165 250 / 0.1);
+  --fx-violet: rgb(139 124 246 / 0.09);
+  --fx-secure: rgb(52 211 153 / 0.07);
+}
+
+/* The clipping container. Sections that use it must be position:relative. */
+.fx-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  /* Fades the pattern out top and bottom so it never crowds a heading. */
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+}
+
+/* Oversized so a translating sheet never exposes an edge. */
+.fx-sheet {
+  position: absolute;
+  inset: -20%;
+}
+
+/* Content must always sit above the backdrop. */
+.fx-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes fx-drift-diag {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-56px, -56px, 0); }
+}
+@keyframes fx-drift-y {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, -64px, 0); }
+}
+@keyframes fx-drift-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-80px, 0, 0); }
+}
+@keyframes fx-sweep-y {
+  from { transform: translate3d(0, -40%, 0); }
+  to   { transform: translate3d(0, 140%, 0); }
+}
+@keyframes fx-sweep-x {
+  from { transform: translate3d(-60%, 0, 0); }
+  to   { transform: translate3d(160%, 0, 0); }
+}
+@keyframes fx-breathe {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+/* ---------------------------------------------------- hero: engineering grid */
+.fx-grid {
+  background-image:
+    linear-gradient(to right, var(--fx-ink) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--fx-ink) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: fx-drift-diag 90s linear infinite;
+}
+
+/* ------------------------------------------- about: minimal flowing data lines */
+.fx-flow {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 63px,
+    var(--fx-ink) 63px 64px
+  );
+  animation: fx-drift-y 70s linear infinite;
+}
+/* A single slow highlight passing along the lines, suggesting direction. */
+.fx-flow-sweep {
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--fx-accent), transparent);
+  width: 42%;
+  animation: fx-sweep-x 26s ease-in-out infinite;
+}
+
+/* ------------------------------------------------- skills: technical node grid */
+.fx-nodes {
+  background-image:
+    radial-gradient(circle at center, var(--fx-ink-strong) 1.2px, transparent 1.2px),
+    linear-gradient(to right, var(--fx-ink) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--fx-ink) 1px, transparent 1px);
+  background-size: 56px 56px, 56px 56px, 56px 56px;
+  animation: fx-drift-diag 120s linear infinite;
+}
+
+/* ------------------------------------------ projects: infrastructure pipelines */
+.fx-pipeline {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 79px,
+    var(--fx-ink) 79px 80px
+  );
+  animation: fx-drift-x 80s linear infinite;
+}
+/* A packet of flow travelling down the lanes. */
+.fx-pipeline-sweep {
+  inset: 0;
+  height: 34%;
+  background: linear-gradient(180deg, transparent, var(--fx-accent), transparent);
+  animation: fx-sweep-y 22s ease-in-out infinite;
+}
+
+/* ------------------------------------------- experience: timeline / data flow */
+.fx-timeline {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 159px,
+    var(--fx-ink) 159px 160px
+  );
+}
+.fx-timeline-sweep {
+  inset: 0;
+  height: 26%;
+  background: linear-gradient(180deg, transparent, var(--fx-violet), transparent);
+  animation: fx-sweep-y 19s linear infinite;
+}
+
+/* ------------------------------------------ achievements: constellation field */
+.fx-constellation {
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--fx-ink-strong) 1.4px, transparent 1.6px),
+    radial-gradient(circle at 34% 62%, var(--fx-ink-strong) 1.1px, transparent 1.3px),
+    radial-gradient(circle at 58% 24%, var(--fx-accent) 1.8px, transparent 2px),
+    radial-gradient(circle at 76% 71%, var(--fx-ink-strong) 1.2px, transparent 1.4px),
+    radial-gradient(circle at 89% 33%, var(--fx-ink-strong) 1.5px, transparent 1.7px),
+    radial-gradient(circle at 22% 84%, var(--fx-accent) 1.3px, transparent 1.5px),
+    radial-gradient(circle at 66% 92%, var(--fx-ink-strong) 1.1px, transparent 1.3px),
+    radial-gradient(circle at 45% 8%, var(--fx-ink-strong) 1.2px, transparent 1.4px);
+  background-size: 300px 300px;
+  animation: fx-breathe 14s ease-in-out infinite;
+}
+
+/* ------------------------------------------- contact: calm connected network */
+.fx-connected {
+  background-image:
+    radial-gradient(circle at center, var(--fx-ink-strong) 1.3px, transparent 1.5px),
+    linear-gradient(45deg, transparent calc(50% - 0.5px), var(--fx-ink) 50%, transparent calc(50% + 0.5px));
+  background-size: 92px 92px, 92px 92px;
+  animation: fx-drift-diag 140s linear infinite;
+}
+
+/*
+  On wide screens the copy occupies the left column, so the network is thinned
+  there and left at full strength on the right, behind the pipeline graphic.
+  Below lg the layout is single-column, so no horizontal bias applies.
+*/
+@media (min-width: 1024px) {
+  .fx-canvas {
+    mask-image: linear-gradient(to right, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.5) 34%, #000 62%);
+    -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.5) 34%, #000 62%);
+  }
+}
+
+/* --------------------------------------------------------------- ambient glow */
+.fx-glow {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  filter: blur(90px);
+}
+
+/*
+  Phones keep only the hero backdrop — "minimal nodes + subtle grid".
+
+  The eight per-section layers are dropped entirely below 768px. Each is a
+  full-section masked layer, and masking forces an expensive compositing path;
+  measured against a no-background build they were adding roughly a second of
+  main-thread blocking on a throttled mobile profile, for texture that is
+  barely perceptible at that size. The hero layer stays, static.
+*/
+@media (max-width: 767px) {
+  .fx-layer-section { display: none; }
+  .fx-glow { display: none; }
+  .fx-flow-sweep,
+  .fx-pipeline-sweep,
+  .fx-timeline-sweep { display: none; }
+  .fx-sheet,
+  .fx-grid { animation: none !important; }
+}
+
+/* Honour the motion preference explicitly: hold a static pattern, no movement. */
+@media (prefers-reduced-motion: reduce) {
+  .fx-sheet,
+  .fx-grid,
+  .fx-flow,
+  .fx-nodes,
+  .fx-pipeline,
+  .fx-timeline,
+  .fx-constellation,
+  .fx-connected {
+    animation: none !important;
+  }
+  .fx-flow-sweep,
+  .fx-pipeline-sweep,
+  .fx-timeline-sweep { display: none; }
+}

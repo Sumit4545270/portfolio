@@ -5,7 +5,7 @@ const ditiss = education.find((e) => e.id === 'ditiss')
 
 export function About() {
   return (
-    <Section id="about" tinted>
+    <Section id="about" tinted backdrop="flow">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16">
         <div>
           <SectionHeading

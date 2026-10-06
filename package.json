@@ -12,7 +12,8 @@
     "audit": "node scripts/audit.mjs",
     "test:ui": "node scripts/interactions.mjs",
     "shot": "node scripts/shot.mjs",
-    "image": "node scripts/gen-profile-image.mjs"
+    "image": "node scripts/gen-profile-image.mjs",
+    "test:bg": "node scripts/background-checks.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.52.0",

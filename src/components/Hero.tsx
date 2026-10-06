@@ -4,6 +4,7 @@ import { ButtonLink, ResumeButton } from './ui'
 import { TechIcon } from './TechIcon'
 import { HeroVisual } from './HeroVisual'
 import { Avatar } from './Avatar'
+import { NetworkCanvas } from './background/NetworkCanvas'
 
 const SOCIALS = [
   { label: 'LinkedIn', href: profile.links.linkedin, icon: 'linkedin' },
@@ -18,13 +19,19 @@ export function Hero() {
       id="home"
       className="relative overflow-hidden pt-24 pb-14 sm:pt-28 lg:pt-32 lg:pb-20"
     >
-      <div aria-hidden="true" className="grid-backdrop pointer-events-none absolute inset-0" />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[-16rem] left-1/2 hidden h-[28rem] w-[min(56rem,105vw)] -translate-x-1/2 rounded-full bg-accent/7 blur-[120px] md:block"
-      />
+      {/*
+        Hero backdrop, back to front: a drifting engineering grid, the animated
+        node network, then two ambient glows. The whole stack is decorative,
+        non-interactive, and masked so it never competes with the copy.
+      */}
+      <div className="fx-layer" aria-hidden="true">
+        <div className="fx-sheet fx-grid" />
+        <NetworkCanvas />
+        <div className="fx-glow -top-40 left-1/2 h-[26rem] w-[min(52rem,100vw)] -translate-x-1/2 bg-accent/[0.07]" />
+        <div className="fx-glow top-1/4 -right-32 h-80 w-80 bg-[color:var(--fx-violet)]" />
+      </div>
 
-      <div className="container-page relative">
+      <div className="container-page fx-content">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.82fr)] lg:gap-16 xl:gap-20">
           {/* ---------------------------------------------------------- copy */}
           <div className="reveal max-w-2xl">

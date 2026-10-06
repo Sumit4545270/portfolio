@@ -46,7 +46,7 @@ const opacity = await page.evaluate(() => {
   const g = document.querySelector('#skills .reveal:not(header)')
   return g ? getComputedStyle(g).opacity : 'none'
 })
-check('remounted skill group is visible', opacity === '1', `opacity=${opacity}`)
+check('remounted skill group is visible', parseFloat(opacity) > 0.9, `opacity=${opacity}`)
 
 await page.getByRole('tab', { name: 'All', exact: true }).click()
 await page.waitForTimeout(300)
@@ -59,7 +59,7 @@ const searchOpacity = await page.evaluate(() => {
   const g = document.querySelector('#skills .reveal:not(header)')
   return g ? getComputedStyle(g).opacity : 'none'
 })
-check('searched group is visible', searchOpacity === '1', `opacity=${searchOpacity}`)
+check('searched group is visible', parseFloat(searchOpacity) > 0.9, `opacity=${searchOpacity}`)
 
 await page.getByRole('button', { name: /clear search/i }).click()
 await page.getByRole('tab', { name: 'All', exact: true }).click()

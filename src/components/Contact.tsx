@@ -22,7 +22,7 @@ const CHANNELS = [
 
 export function Contact() {
   return (
-    <Section id="contact">
+    <Section id="contact" backdrop="connected">
       <div className="mx-auto max-w-4xl text-center">
         <p className="eyebrow reveal mb-3">Get in touch</p>
 

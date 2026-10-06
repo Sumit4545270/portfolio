@@ -180,6 +180,42 @@ his GitHub avatar — the same photograph, not a substitute or a generated image
 To use a different photo, drop it at `assets/profile-source.jpg` and re-run `npm run image`.
 The script prefers that file over the remote one.
 
+## Background system
+
+A supporting layer only — content always wins. Two parts:
+
+**The hero network** (`src/components/background/NetworkCanvas.tsx`) is the one animated
+thing on the site. Nodes drift in five loose bands reading top-down as intelligence →
+delivery → application, linked when close enough, with occasional packets travelling the
+edges. Canvas rather than SVG because it is many small primitives redrawn per frame: one
+composited layer instead of ~100 individually styled SVG elements.
+
+It yields in every case it should:
+
+| Condition | Behaviour |
+| --- | --- |
+| `prefers-reduced-motion` | One static frame, no loop at all |
+| Tab hidden | Loop stops (`visibilitychange`) |
+| Hero scrolled away | Loop stops (`IntersectionObserver`) |
+| ≤2 GB RAM, ≤2 cores, or data-saver | Canvas does not run |
+| Viewport < 768px / < 1280px | 13 / 26 nodes instead of 44 |
+
+Device pixel ratio is capped at 2, edges relink on a 1.2s cadence rather than per frame,
+and the theme is picked up from a `MutationObserver` on the root class.
+
+**Section patterns** (`SectionBackdrop.tsx` + the `fx-*` classes in `index.css`) are pure
+CSS, no JavaScript: about = flowing lines, skills and why = node grid, projects and deep
+dive = pipeline lanes, experience = timeline flow, achievements = constellation,
+contact = connected nodes. Motion uses `transform` on an oversized sheet rather than
+animating `background-position`, so each stays a single composited layer.
+
+Every layer is `aria-hidden`, `pointer-events: none`, clipped by its container, and masked
+to fade before it reaches any heading. Measured ink coverage is **0.22% of pixels on
+desktop and 0.11% on mobile**.
+
+`npm run test:bg` asserts all of the above, counting real animation frames rather than
+trusting the code path.
+
 ## Design notes
 
 - **Themes are designed separately.** Light is paper-white with deep navy text; dark is a

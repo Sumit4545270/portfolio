@@ -11,7 +11,7 @@ const icons: Record<string, LucideIcon> = {
 
 export function Achievements() {
   return (
-    <Section id="achievements" tinted>
+    <Section id="achievements" tinted backdrop="constellation">
       <SectionHeading
         id="achievements"
         eyebrow="Certifications & achievements"

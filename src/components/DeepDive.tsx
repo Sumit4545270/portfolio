@@ -10,7 +10,7 @@ export function DeepDive() {
   const [tab, setTab] = useState<Tab>('pipeline')
 
   return (
-    <Section id="deep-dive" tinted>
+    <Section id="deep-dive" tinted backdrop="pipeline">
       <SectionHeading
         id="deep-dive"
         eyebrow="Engineering deep dive"

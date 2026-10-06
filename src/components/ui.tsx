@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { Check, Copy, Download } from 'lucide-react'
 import { profile } from '../data/profile'
+import { SectionBackdrop, type BackdropVariant } from './background/SectionBackdrop'
 
 /* ------------------------------------------------------------------ layout */
 
@@ -9,11 +10,14 @@ export function Section({
   children,
   className = '',
   tinted = false,
+  backdrop = 'none',
 }: {
   id: string
   children: ReactNode
   className?: string
   tinted?: boolean
+  /** Decorative background variant; see SectionBackdrop. */
+  backdrop?: BackdropVariant
 }) {
   return (
     <section
@@ -23,7 +27,8 @@ export function Section({
       } ${className}`}
       aria-labelledby={`${id}-heading`}
     >
-      <div className="container-page">{children}</div>
+      <SectionBackdrop variant={backdrop} />
+      <div className="container-page fx-content">{children}</div>
     </section>
   )
 }
